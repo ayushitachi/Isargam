@@ -12,9 +12,11 @@ import java.io.File
 import java.lang.Exception
 
 class PlaySong : AppCompatActivity() {
+    // setting mediaPlayer and a new thread to update seekbar
     var music = MediaPlayer()
     var updateSeek = Thread()
 
+    // after destroying the activity pause the music and thread
     override fun onDestroy() {
         super.onDestroy()
         music.pause()
@@ -41,10 +43,12 @@ class PlaySong : AppCompatActivity() {
         var position = bundle.getInt("position")
         val currSong = songsList[position]
 
+        //  Creating the music player for current song
         val uri = Uri.parse(currSong.toString())
         music = MediaPlayer.create(this, uri)
         seekBar.max = music.duration
 
+        // Creating the thread for updating seekbar
         updateSeek = object : Thread() {
             override fun run() {
                 var p = 0 ;
@@ -60,6 +64,7 @@ class PlaySong : AppCompatActivity() {
                 }
             }
         }
+        // starting the thread
         updateSeek.start()
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -138,6 +143,7 @@ class PlaySong : AppCompatActivity() {
             } else{
                 position -= 1
             }
+
             val backSong = songsList[position]
             Sname.text = backSong.name.replace(".mp", "")
 
